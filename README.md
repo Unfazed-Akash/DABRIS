@@ -80,7 +80,7 @@ To get a local copy up and running, follow these simple steps.
     ```sh
     flask run
     ```
-    Open [http://127.0.0.1:5000](http://127.0.0.1:5000) in your browser to see the app running.
+    Open [http://127.0.0.1:5000] or similar type to see results in your local machine or in your browser to see the app running.
 
 ## 📝 Note on API Usage
 
