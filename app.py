@@ -9,6 +9,7 @@ import contextlib
 from itertools import cycle
 import google.api_core.exceptions
 import time
+import glob
 
 # Load environment variables from .env file
 load_dotenv()
@@ -35,11 +36,19 @@ def configure_gemini():
 configure_gemini()
 # --- END OF SETUP ---
 
-# --- CORRECT FILE-SAVING LOGIC ---
+# --- FILE-SAVING LOGIC WITH CLEANUP ---
 UPLOAD_FOLDER = 'uploads'
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
-# --- END OF FIX ---
+
+def cleanup_old_files():
+    """Deletes files in the uploads folder older than 1 hour."""
+    now = time.time()
+    for filename in glob.glob(os.path.join(UPLOAD_FOLDER, "*.csv")):
+        if os.path.getmtime(filename) < now - 3600:
+            os.remove(filename)
+            app.logger.info(f"Removed old file: {filename}")
+# --- END OF FILE LOGIC ---
 
 
 @app.route('/')
@@ -51,6 +60,9 @@ def index():
 @app.route('/upload', methods=['POST'])
 def handle_upload():
     """Handle CSV file upload by saving it to a temporary file."""
+    # Run cleanup every time a new file is uploaded
+    cleanup_old_files()
+
     if 'csvFile' not in request.files:
         return jsonify({'status': 'error', 'message': 'No file part'}), 400
 
@@ -78,9 +90,6 @@ def handle_upload():
 
 @app.route('/analyze', methods=['POST'])
 def analyze_query():
-    """
-    Analyzes the user's query with robust error handling and API key rotation.
-    """
     if 'filepath' not in session or not os.path.exists(session['filepath']):
         return jsonify({'response': 'File not found. Please upload a CSV file first.'}), 400
 
@@ -93,8 +102,9 @@ def analyze_query():
         df = pd.read_csv(filepath)
         df_head = df.head().to_string()
 
+        # --- FINAL, MOST ROBUST PROMPT ---
         prompt = f"""
-        You are an expert Python data analyst. Your task is to generate a short, executable Python code snippet to answer the user's question about a pandas DataFrame.
+        You are an expert Python data analyst. Your task is to generate a single, executable line of Python code to answer the user's question about a pandas DataFrame.
 
         CONTEXT:
         The DataFrame is in a variable named `df`.
@@ -102,22 +112,20 @@ def analyze_query():
         {df_head}
 
         RULES:
-        1. Your code must be robust. If filtering, handle potential missing values (NaN) to avoid errors. For example, use `df['column'].str.contains('value', na=False)`.
-        2. The code must end with a `print()` statement for the final answer.
-        3. Provide only raw Python code. No explanations, comments, backticks, or the word "python".
+        1. Your entire response must be a single line of Python code.
+        2. The code must end with a print() statement.
+        3. Be robust. If filtering, handle potential missing values (NaN), for example: `df['column'].str.contains('value', na=False)`.
+        4. Provide only raw code. No explanations, comments, or backticks.
 
         USER'S QUESTION: "{query}"
 
         PYTHON CODE:
         """
 
-        max_retries = len(API_KEYS) * 2
+        max_retries = len(API_KEYS)
         for attempt in range(max_retries):
             try:
-                # --- THIS IS THE CORRECTED MODEL NAME ---
                 model = genai.GenerativeModel('gemini-pro-latest')
-                # --- END OF CORRECTION ---
-
                 response = model.generate_content(prompt)
                 code_to_execute = response.text.strip()
                 
@@ -136,9 +144,12 @@ def analyze_query():
                 configure_gemini()
                 if attempt == max_retries - 1:
                     raise e
-            except google.api_core.exceptions.FailedPrecondition as e:
-                 app.logger.warning(f"Rate limit hit (RPM): {e}. Waiting before retry.")
-                 time.sleep(5)
+            except Exception as e:
+                 # This catches syntax errors from the AI and tries the next key
+                 app.logger.warning(f"Code execution error: {e}. Switching key and retrying.")
+                 configure_gemini()
+                 if attempt == max_retries - 1:
+                    raise e
 
     except Exception as e:
         app.logger.error(f"Final error after retries: {e}")
