@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DABRIS | AI-Powered Data Analysis</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>">
+</head>
+<body>
+
+    <div class="preloader">
+        <div class="preloader-logo">DABRIS</div>
+    </div>
+
+    <header class="nav-header">
+        <div class="container nav-container">
+            <a href="#home" class="brand">DABRIS ✨</a>
+            <nav class="nav-links">
+                <a href="#home" class="nav-link active">Home</a>
+                <a href="#about" class="nav-link">About</a>
+                <a href="#chatbot" class="nav-link">Chatbot</a>
+                <a href="#contact" class="nav-link">Contact</a>
+            </nav>
+            <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+                <i class="fas fa-sun"></i>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <section id="home" class="hero">
+            <div class="container hero-content">
+                <div class="hero-text">
+                    <h1>The Future of Data Interaction is
+                        <span class="highlight-container">
+                            <span class="highlight">Conversational.</span>
+                        </span>
+                    </h1>
+                    <p class="subtitle">Stop wrestling with complex tools. DABRIS transforms your raw data into strategic insights through simple conversation. Upload a CSV and start asking questions—it's that easy.</p>
+                    <a href="#chatbot" class="cta-button">Launch the Analyst</a>
+                </div>
+                <div class="hero-image reveal">
+                    <img src="/static/hero-graphic.png.jpg" alt="Abstract data visualization">
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="about">
+            <div class="container about-content">
+                <div class="about-image reveal">
+                     <img src="/static/about-graphic.png.jpg" alt="Person interacting with a data hologram">
+                </div>
+                <div class="about-text reveal">
+                    <h2 class="section-title">Democratizing Data Science</h2>
+                    <p>In a world overflowing with data, clarity is power. DABRIS was built to bridge the gap between complex datasets and clear, actionable insights. We believe that you shouldn't need to be a data scientist to understand your data. Our mission is to provide an intuitive, powerful, and secure platform that empowers students, researchers, and businesses to make data-driven decisions with confidence.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="chatbot" class="chatbot-section reveal">
+            <h2 class="section-title">The DABRIS AI Analyst</h2>
+            <div id="app-container">
+                <main id="chat-messages"></main>
+                <div class="chat-footer">
+                    <form id="message-form">
+                        <button type="button" id="upload-button" title="Upload CSV">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.2 15c.7-1.2 1-2.5.7-3.9-.6-2.4-3-4-5.4-4-1.5 0-2.8.8-3.5 2.1-.4-.1-.8-.2-1.3-.2-2.8 0-5 2.2-5 5s2.2 5 5 5h9.5c1.4 0 2.5-1.1 2.5-2.5 0-1.1-.7-2-1.7-2.3"></path><path d="M12 12v9"></path><path d="m16 16-4-4-4 4"></path></svg>
+                        </button>
+                        <input type="file" id="csv-upload" accept=".csv" hidden>
+                        <div id="input-wrapper">
+                            <input type="text" id="user-input" placeholder="Ask about your data..." disabled>
+                        </div>
+                        <button type="submit" id="send-button" title="Send" disabled>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="contact reveal">
+            <div class="container contact-content">
+                <h2 class="section-title">Get In Touch</h2>
+                <p class="subtitle">Have a question or feedback? We'd love to hear from you.</p>
+                <form id="contact-form" class="contact-form">
+                    <div class="form-group">
+                        <input type="text" name="name" placeholder="Your Name" required>
+                        <input type="email" name="email" placeholder="Your Email" required>
+                    </div>
+                    <textarea name="message" rows="7" placeholder="Your Message" required></textarea>
+                    <button type="submit" class="cta-button">Send Message</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-content">
+            <p>&copy; <span id="year"></span> DABRIS. Built for a brighter data future.</p>
+            <div class="social-links">
+                <a href="https://github.com/Unfazed-Akash" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                <a href="https://www.linkedin.com/in/unfazed-akash/" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                <a href="https://x.com/ATrivedi85797" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <div id="toast-container"></div>
+
+    <script src="/static/js/script.js"></script>
+</body>
+</html>
